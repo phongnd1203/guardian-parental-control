@@ -6,9 +6,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import app.guardian.android.ui.MainViewModel
-import app.guardian.android.ui.screens.AuthScreen
 import app.guardian.android.ui.screens.HomeScreen
+import app.guardian.android.ui.screens.LoginScreen
 import app.guardian.android.ui.screens.OnboardingScreen
+import app.guardian.android.ui.screens.RegisterScreen
 
 @Composable
 fun AppNavigation(
@@ -24,7 +25,7 @@ fun AppNavigation(
             OnboardingScreen(
                 onCompleteOnboarding = {
                     viewModel.completeOnboarding {
-                        navController.navigate(Screen.Auth.route) {
+                        navController.navigate(Screen.Login.route) {
                             popUpTo(Screen.Onboarding.route) {
                                 inclusive = true
                             }
@@ -34,16 +35,36 @@ fun AppNavigation(
             )
         }
 
-        composable(Screen.Auth.route) {
-            AuthScreen(
-                onAuthSuccess = {
-                    viewModel.signIn {
+        composable(Screen.Login.route) {
+            LoginScreen(
+                onLoginSuccess = {
+                    viewModel.onAuthSuccess {
                         navController.navigate(Screen.Home.route) {
-                            popUpTo(Screen.Auth.route) {
+                            popUpTo(Screen.Login.route) {
                                 inclusive = true
                             }
                         }
                     }
+                },
+                onNavigateToRegister = {
+                    navController.navigate(Screen.Register.route)
+                }
+            )
+        }
+
+        composable(Screen.Register.route) {
+            RegisterScreen(
+                onRegisterSuccess = {
+                    viewModel.onAuthSuccess {
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.Login.route) {
+                                inclusive = true
+                            }
+                        }
+                    }
+                },
+                onNavigateToLogin = {
+                    navController.popBackStack()
                 }
             )
         }
@@ -52,7 +73,7 @@ fun AppNavigation(
             HomeScreen(
                 onSignOut = {
                     viewModel.signOut {
-                        navController.navigate(Screen.Auth.route) {
+                        navController.navigate(Screen.Login.route) {
                             popUpTo(Screen.Home.route) {
                                 inclusive = true
                             }

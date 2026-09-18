@@ -17,13 +17,13 @@ class NavigationStateTest {
     }
 
     @Test
-    fun `returning unauthenticated user resolves to Auth screen`() {
+    fun `returning unauthenticated user resolves to Login screen`() {
         val startDestination = Screen.resolveStartDestination(
             isOnboardingCompleted = true,
             isUserLoggedIn = false
         )
-        assertEquals(Screen.Auth, startDestination)
-        assertEquals("auth", startDestination.route)
+        assertEquals(Screen.Login, startDestination)
+        assertEquals("login", startDestination.route)
     }
 
     @Test
@@ -48,7 +48,8 @@ class NavigationStateTest {
     @Test
     fun `screen routes are uniquely and accurately configured`() {
         assertEquals("onboarding", Screen.Onboarding.route)
-        assertEquals("auth", Screen.Auth.route)
+        assertEquals("login", Screen.Login.route)
+        assertEquals("register", Screen.Register.route)
         assertEquals("home", Screen.Home.route)
     }
 }

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import app.guardian.android.data.UserPreferences
 import app.guardian.android.data.UserPreferencesRepository
+import app.guardian.android.data.supabase.AuthRepository
 import app.guardian.android.navigation.Screen
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -26,7 +27,8 @@ sealed interface MainUiState {
 
 class MainViewModel(
     application: Application,
-    private val repository: UserPreferencesRepository = UserPreferencesRepository(application)
+    private val repository: UserPreferencesRepository = UserPreferencesRepository(application),
+    private val authRepository: AuthRepository = AuthRepository(preferencesRepository = repository)
 ) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow<MainUiState>(MainUiState.Loading)
@@ -69,7 +71,7 @@ class MainViewModel(
         }
     }
 
-    fun signIn(onSuccess: () -> Unit) {
+    fun onAuthSuccess(onSuccess: () -> Unit) {
         viewModelScope.launch {
             repository.setUserLoggedIn(true)
             onSuccess()
@@ -78,6 +80,7 @@ class MainViewModel(
 
     fun signOut(onSuccess: () -> Unit) {
         viewModelScope.launch {
+            authRepository.signOut()
             repository.signOut()
             onSuccess()
         }
@@ -85,6 +88,7 @@ class MainViewModel(
 
     fun resetAll(onSuccess: () -> Unit) {
         viewModelScope.launch {
+            authRepository.signOut()
             repository.resetAll()
             onSuccess()
         }
