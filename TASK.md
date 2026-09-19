@@ -6,7 +6,7 @@ Tài liệu này chi tiết hóa toàn bộ các hạng mục triển khai cho *
 
 ## Bảng trạng thái tổng quan
 
-- **Tiến độ tổng thể:** 75% hoàn thành (Hoàn thành 100% Giai đoạn 1, 2, 3 & 4)
+- **Tiến độ tổng thể:** 85% hoàn thành (Hoàn thành 100% Giai đoạn 1, 2, 3, 4 & 5)
 - **Quy ước trạng thái:**
   - `[ ]` Chưa bắt đầu (Pending)
   - `[/]` Đang thực hiện (In Progress)
@@ -224,7 +224,7 @@ Tài liệu này chi tiết hóa toàn bộ các hạng mục triển khai cho *
 ## Giai đoạn 5: Phát triển Giao diện & Màn hình Family (Parent Side)
 
 ### 5.1. Định tuyến Navigation Compose
-- [ ] Định nghĩa `FamilyDestinations`:
+- [x] Định nghĩa `FamilyDestinations`:
   - `family` (Home)
   - `family/create` (Tạo gia đình nếu chưa có)
   - `family/child/add`
@@ -236,15 +236,15 @@ Tài liệu này chi tiết hóa toàn bộ các hạng mục triển khai cho *
   - `family/member/{memberId}`
   - `family/invite`
   - `family/settings`
-- [ ] Thiết lập Deep Link cho lời mời: `https://guardian.example.com/invite/{token}` mở thẳng màn hình xác nhận lời mời.
-- [ ] Đảm bảo chỉ truyền tham số ID đơn giản giữa các route; ViewModel tự nạp entity từ Repository.
+- [x] Thiết lập Deep Link cho lời mời: `https://guardian.example.com/invite/{token}` mở thẳng màn hình xác nhận lời mời.
+- [x] Đảm bảo chỉ truyền tham số ID đơn giản giữa các route; ViewModel tự nạp entity từ Repository.
 
 ### 5.2. Màn hình Family Home (`FamilyHomeScreen`)
-- [ ] Xây dựng `FamilyUiState`:
+- [x] Xây dựng `FamilyUiState`:
   - `Loading`, `Content` (family, children, members, pendingInvitations, isRefreshing, isOffline), `Empty` (canCreateFamily), `Error`.
-- [ ] Xây dựng `FamilyViewModel` & `FamilyAction`:
+- [x] Xây dựng `FamilyViewModel` & `FamilyAction`:
   - Tách bạch UDF, thu thập State qua `collectAsStateWithLifecycle()`.
-- [ ] Giao diện Family Home:
+- [x] Giao diện Family Home:
   - Header gia đình (Tên, số lượng thành viên, số trẻ).
   - Section Children kèm nút `+ Add child`.
   - Section Parents & Guardians kèm danh sách pending invitations và nút `+ Invite parent`.
@@ -252,42 +252,42 @@ Tài liệu này chi tiết hóa toàn bộ các hạng mục triển khai cho *
   - Hỗ trợ Pull-to-refresh.
 
 ### 5.3. Màn hình Tạo Gia đình (`CreateFamilyScreen`)
-- [ ] Form nhập tên gia đình (`family_name`).
-- [ ] Validation: bắt buộc, trim khoảng trắng, từ 2–50 ký tự.
-- [ ] Gọi `create-family` qua ViewModel, xử lý loading và điều hướng sang Family Home.
+- [x] Form nhập tên gia đình (`family_name`).
+- [x] Validation: bắt buộc, trim khoảng trắng, từ 2–50 ký tự.
+- [x] Gọi `create-family` qua ViewModel, xử lý loading và điều hướng sang Family Home.
 
 ### 5.4. Màn hình Thêm & Sửa Trẻ (`AddChildScreen` / `EditChildScreen`)
-- [ ] Các trường: Tên (bắt buộc, 1-50 chars), Nickname, Ngày sinh (DatePicker, <= ngày hiện tại), Ảnh đại diện.
-- [ ] Chọn ảnh qua Android Photo Picker, preview và tải lên.
-- [ ] Không cho phép nhập tuổi thủ công (tuổi sinh động theo DOB).
+- [x] Các trường: Tên (bắt buộc, 1-50 chars), Nickname, Ngày sinh (DatePicker, <= ngày hiện tại), Ảnh đại diện.
+- [x] Chọn ảnh qua Android Photo Picker, preview và tải lên.
+- [x] Không cho phép nhập tuổi thủ công (tuổi sinh động theo DOB).
 
 ### 5.5. Màn hình Chi tiết Trẻ (`ChildDetailScreen`)
-- [ ] Header: Avatar lớn, tên, tuổi.
-- [ ] Section Guardian Devices:
+- [x] Header: Avatar lớn, tên, tuổi.
+- [x] Section Guardian Devices:
   - Danh sách thiết bị của trẻ, pin, trạng thái hoạt động, nút `+ Add device`.
-- [ ] Section Protection Shortcuts:
+- [x] Section Protection Shortcuts:
   - Lối tắt sang Tab Rules (số rules đang bật) và Tab Activity (thời gian hoạt động gần nhất).
-- [ ] Section Profile:
+- [x] Section Profile:
   - Personal info, Child settings.
-- [ ] Menu tùy chọn: Sửa thông tin, Lưu trữ, Xóa trẻ (hiển thị Dialog cảnh báo ngắt kết nối toàn bộ thiết bị liên quan).
+- [x] Menu tùy chọn: Sửa thông tin, Lưu trữ, Xóa trẻ (hiển thị Dialog cảnh báo ngắt kết nối toàn bộ thiết bị liên quan).
 
 ### 5.6. Màn hình Ghép đôi Thiết bị (`PairDeviceScreen`)
-- [ ] Sinh mã QR (chứa JSON object với high-entropy secret token).
-- [ ] Hiển thị mã 6 số phụ trợ để nhập thủ công.
-- [ ] Đếm ngược thời gian hết hạn (10 phút) kèm nút tạo lại mã mới khi hết hạn.
-- [ ] Lắng nghe Realtime: Tự động chuyển màn hình thành công khi con quét/ghép đôi hoàn tất.
+- [x] Sinh mã QR (chứa JSON object với high-entropy secret token).
+- [x] Hiển thị mã 6 số phụ trợ để nhập thủ công.
+- [x] Đếm ngược thời gian hết hạn (10 phút) kèm nút tạo lại mã mới khi hết hạn.
+- [x] Lắng nghe Realtime: Tự động chuyển màn hình thành công khi con quét/ghép đôi hoàn tất.
 
 ### 5.7. Màn hình Chi tiết Thiết bị (`DeviceDetailScreen`)
-- [ ] Thông tin thiết bị: Model, Hệ điều hành Android, Phiên bản Guardian, Mức pin & trạng thái sạc, Last seen.
-- [ ] Snapshot Quyền thiết bị (`DevicePermissionSnapshot`):
+- [x] Thông tin thiết bị: Model, Hệ điều hành Android, Phiên bản Guardian, Mức pin & trạng thái sạc, Last seen.
+- [x] Snapshot Quyền thiết bị (`DevicePermissionSnapshot`):
   - Usage access, Accessibility, VPN active, Notifications, Location, Device admin.
-- [ ] Tùy chọn quản lý: Đổi tên thiết bị, Hủy ghép đôi (`Unpair Device`) kèm Confirm Dialog.
+- [x] Tùy chọn quản lý: Đổi tên thiết bị, Hủy ghép đôi (`Unpair Device`) kèm Confirm Dialog.
 
 ### 5.8. Màn hình Quản lý Thành viên & Lời mời (`InviteParentScreen` / `MemberDetailScreen`)
-- [ ] Màn hình mời phụ huynh: Nhập Email, chọn Role (`Parent` hoặc `Viewer`), hiển thị mô tả quyền hạn tương ứng.
-- [ ] Hiển thị trạng thái lời mời (Đang chờ, Ngày hết hạn 72h), nút Gửi lại (Resend) và Hủy (Cancel).
-- [ ] Màn hình chi tiết thành viên: Đổi vai trò (Chỉ Owner), Xóa thành viên (Chỉ Owner).
-- [ ] Màn hình Nhận lời mời (`AcceptInviteScreen` qua App Link): Xem thông tin gia đình được mời, chấp thuận hoặc từ chối.
+- [x] Màn hình mời phụ huynh: Nhập Email, chọn Role (`Parent` hoặc `Viewer`), hiển thị mô tả quyền hạn tương ứng.
+- [x] Hiển thị trạng thái lời mời (Đang chờ, Ngày hết hạn 72h), nút Gửi lại (Resend) và Hủy (Cancel).
+- [x] Màn hình chi tiết thành viên: Đổi vai trò (Chỉ Owner), Xóa thành viên (Chỉ Owner).
+- [x] Màn hình Nhận lời mời (`AcceptInviteScreen` qua App Link): Xem thông tin gia đình được mời, chấp thuận hoặc từ chối.
 
 ---
 

@@ -46,6 +46,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -54,6 +55,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.guardian.android.data.supabase.AuthRepository
+import app.guardian.android.feature.family.di.FamilyDependencyProvider
+import app.guardian.android.feature.family.domain.repository.FamilyRepository
 import app.guardian.android.ui.theme.ErrorRed
 import kotlinx.coroutines.launch
 
@@ -61,9 +64,14 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginScreen(
     authRepository: AuthRepository = remember { AuthRepository() },
-    onLoginSuccess: () -> Unit,
+    familyRepository: FamilyRepository? = null,
+    onLoginSuccess: (hasFamily: Boolean) -> Unit,
     onNavigateToRegister: () -> Unit
 ) {
+    val context = LocalContext.current.applicationContext
+    val resolvedFamilyRepository = familyRepository ?: remember {
+        FamilyDependencyProvider.provideRepository(context)
+    }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
@@ -110,7 +118,7 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(20.dp))
 
             Text(
-                text = "Sign In to Guardian",
+                text = "Welcome Back",
                 style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -118,7 +126,7 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(6.dp))
 
             Text(
-                text = "Authenticate with Supabase to unlock your secure vault",
+                text = "Sign in to manage your family, monitor devices, and keep your children safe.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
@@ -208,13 +216,15 @@ fun LoginScreen(
                     errorMessage = null
                     coroutineScope.launch {
                         val result = authRepository.signIn(email.trim(), password)
-                        isLoading = false
-                        result.fold(
-                            onSuccess = { onLoginSuccess() },
-                            onFailure = { error ->
-                                errorMessage = error.localizedMessage ?: "Sign in failed. Check your credentials."
-                            }
-                        )
+                        if (result.isSuccess) {
+                            val hasFamily = resolvedFamilyRepository.checkHasFamily()
+                            isLoading = false
+                            onLoginSuccess(hasFamily)
+                        } else {
+                            isLoading = false
+                            val error = result.exceptionOrNull()
+                            errorMessage = error?.localizedMessage ?: "Sign in failed. Check your credentials."
+                        }
                     }
                 },
                 enabled = !isLoading,

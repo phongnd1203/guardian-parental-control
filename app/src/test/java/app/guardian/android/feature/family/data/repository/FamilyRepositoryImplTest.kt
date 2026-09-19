@@ -131,6 +131,32 @@ class FamilyRepositoryImplTest {
     }
 
     @Test
+    fun `checkHasFamily returns true and updates cache when remote family exists`() = runBlocking {
+        fakeRemoteDataSource.mockFamily = FamilyDto(
+            id = "fam-10",
+            name = "Stark Family",
+            ownerUserId = "user-stark"
+        )
+
+        val hasFamily = repository.checkHasFamily()
+        assertTrue(hasFamily)
+
+        val cached = fakeFamilyDao.getFamilyById("fam-10")
+        assertNotNull(cached)
+        assertEquals("Stark Family", cached?.name)
+    }
+
+    @Test
+    fun `checkHasFamily returns false and clears cache when no remote family exists`() = runBlocking {
+        fakeFamilyDao.upsertFamily(FamilyEntity(id = "stale-fam", name = "Stale", ownerUserId = "user-old"))
+        fakeRemoteDataSource.mockFamily = null
+
+        val hasFamily = repository.checkHasFamily()
+        org.junit.Assert.assertFalse(hasFamily)
+        assertEquals(null, fakeFamilyDao.getFamilyById("stale-fam"))
+    }
+
+    @Test
     fun `createChild inserts into remote, uploads avatar, and saves to Room`() = runBlocking {
         fakeRemoteDataSource.mockUploadedAvatarPath = "fam-1/children/child-100/avatar.webp"
 

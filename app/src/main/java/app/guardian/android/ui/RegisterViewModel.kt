@@ -11,9 +11,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 enum class RegisterStage(val stepNumber: Int, val title: String) {
-    Credentials(1, "Account Credentials"),
-    Profile(2, "Personal Profile"),
-    SecurityReview(3, "Security & Review")
+    Credentials(1, "Parent Account"),
+    Profile(2, "Parent Profile"),
+    SecurityReview(3, "Family Safety & Review")
 }
 
 data class RegisterUiState(
@@ -120,7 +120,7 @@ class RegisterViewModel(
     fun completeRegistration(onSuccess: () -> Unit) {
         val state = _uiState.value
         if (!state.agreeToTerms) {
-            _uiState.update { it.copy(errorMessage = "You must agree to the Terms & Privacy Shield to continue.") }
+            _uiState.update { it.copy(errorMessage = "You must agree to the Family Privacy Policy & Terms to continue.") }
             return
         }
 

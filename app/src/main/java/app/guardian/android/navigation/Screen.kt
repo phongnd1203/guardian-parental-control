@@ -20,6 +20,7 @@ sealed class Screen(val route: String) {
     data object Onboarding : Screen("onboarding")
     data object Login : Screen("login")
     data object Register : Screen("register")
+    data object CreateFamily : Screen("register/create-family")
     data object Home : Screen("home")
 
     companion object {
@@ -27,15 +28,18 @@ sealed class Screen(val route: String) {
          * Resolves the start destination based on user persistence state:
          * - First launch: Onboarding
          * - Returning user (unauthenticated): Login
-         * - Returning user (authenticated): Home
+         * - Returning user (authenticated without family): CreateFamily
+         * - Returning user (authenticated with family): Home
          */
         fun resolveStartDestination(
             isOnboardingCompleted: Boolean,
-            isUserLoggedIn: Boolean
+            isUserLoggedIn: Boolean,
+            hasFamily: Boolean = true
         ): Screen {
             return when {
                 !isOnboardingCompleted -> Onboarding
                 !isUserLoggedIn -> Login
+                !hasFamily -> CreateFamily
                 else -> Home
             }
         }

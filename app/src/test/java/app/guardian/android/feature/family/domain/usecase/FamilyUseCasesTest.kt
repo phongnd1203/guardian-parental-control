@@ -108,6 +108,7 @@ class FamilyUseCasesTest {
 
     class FakeFamilyRepository : FamilyRepository {
         var lastCreatedChildName: String? = null
+        var hasFamilyValue: Boolean = true
 
         override fun observeFamily(): Flow<Family?> = flowOf(Family("f1", "Smiths", "u1"))
         override fun observeChildren(familyId: String): Flow<List<Child>> = flowOf(emptyList())
@@ -119,6 +120,7 @@ class FamilyUseCasesTest {
         override fun observeDevice(deviceId: String): Flow<Device?> = flowOf(null)
         override suspend fun getDevice(deviceId: String): Device? = null
         override suspend fun refreshFamily(familyId: String?): Result<Unit> = Result.success(Unit)
+        override suspend fun checkHasFamily(): Boolean = hasFamilyValue
         override suspend fun createFamily(name: String): Result<String> = Result.success("fam-created")
 
         override suspend fun createChild(

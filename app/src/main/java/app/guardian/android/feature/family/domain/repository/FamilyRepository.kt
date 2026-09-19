@@ -24,6 +24,7 @@ interface FamilyRepository {
     suspend fun getDevice(deviceId: String): Device?
 
     suspend fun refreshFamily(familyId: String? = null): Result<Unit>
+    suspend fun checkHasFamily(): Boolean
     suspend fun createFamily(name: String): Result<String>
 
     suspend fun createChild(

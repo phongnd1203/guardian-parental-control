@@ -24,6 +24,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -166,6 +167,21 @@ class FamilyRepositoryImpl(
                 invitationDao.upsertInvitations(invitationsDto.map { it.toEntity() })
             }
             Unit
+        }
+    }
+
+    override suspend fun checkHasFamily(): Boolean = withContext(ioDispatcher) {
+        try {
+            val familyDto = remoteDataSource.getMyFamily()
+            if (familyDto != null) {
+                refreshFamily(familyDto.id)
+                true
+            } else {
+                familyDao.clear()
+                false
+            }
+        } catch (e: Exception) {
+            familyDao.observeCurrentFamily().firstOrNull() != null
         }
     }
 

@@ -30,10 +30,22 @@ class NavigationStateTest {
     fun `returning authenticated user resolves to Home screen`() {
         val startDestination = Screen.resolveStartDestination(
             isOnboardingCompleted = true,
-            isUserLoggedIn = true
+            isUserLoggedIn = true,
+            hasFamily = true
         )
         assertEquals(Screen.Home, startDestination)
         assertEquals("home", startDestination.route)
+    }
+
+    @Test
+    fun `returning authenticated user without family resolves to CreateFamily screen`() {
+        val startDestination = Screen.resolveStartDestination(
+            isOnboardingCompleted = true,
+            isUserLoggedIn = true,
+            hasFamily = false
+        )
+        assertEquals(Screen.CreateFamily, startDestination)
+        assertEquals("register/create-family", startDestination.route)
     }
 
     @Test

@@ -278,13 +278,13 @@ private fun StageCredentialsContent(
 
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text(
-            text = "Create Your Login",
+            text = "Create Parent Account",
             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
             color = MaterialTheme.colorScheme.onBackground
         )
 
         Text(
-            text = "Enter a valid email address and choose a strong password to safeguard your account.",
+            text = "Enter your email address and choose a password to manage your family protection dashboard.",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -292,7 +292,7 @@ private fun StageCredentialsContent(
         OutlinedTextField(
             value = state.email,
             onValueChange = viewModel::updateEmail,
-            label = { Text("Email Address") },
+            label = { Text("Parent Email Address") },
             leadingIcon = {
                 Icon(imageVector = Icons.Default.Email, contentDescription = null)
             },
@@ -355,13 +355,13 @@ private fun StageProfileContent(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text(
-            text = "Tell Us About Yourself",
+            text = "Parent Profile",
             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
             color = MaterialTheme.colorScheme.onBackground
         )
 
         Text(
-            text = "This information helps personalize your security profile and breach reports.",
+            text = "Personalize your guardian account. This is how you'll appear to family members and children.",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -369,7 +369,8 @@ private fun StageProfileContent(
         OutlinedTextField(
             value = state.fullName,
             onValueChange = viewModel::updateFullName,
-            label = { Text("Full Legal Name") },
+            label = { Text("Full Name") },
+            placeholder = { Text("e.g. John Nguyen") },
             leadingIcon = {
                 Icon(imageVector = Icons.Default.Person, contentDescription = null)
             },
@@ -381,7 +382,8 @@ private fun StageProfileContent(
         OutlinedTextField(
             value = state.displayName,
             onValueChange = viewModel::updateDisplayName,
-            label = { Text("Display Name / Handle") },
+            label = { Text("Family Role / Nickname") },
+            placeholder = { Text("e.g. Dad, Mom, Guardian") },
             leadingIcon = {
                 Icon(imageVector = Icons.Default.Badge, contentDescription = null)
             },
@@ -393,7 +395,7 @@ private fun StageProfileContent(
         OutlinedTextField(
             value = state.phoneNumber,
             onValueChange = viewModel::updatePhoneNumber,
-            label = { Text("Emergency Contact / Phone (optional)") },
+            label = { Text("Phone Number (Optional)") },
             leadingIcon = {
                 Icon(imageVector = Icons.Default.Phone, contentDescription = null)
             },
@@ -412,7 +414,7 @@ private fun StageSecurityReviewContent(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text(
-            text = "Security & Consent",
+            text = "Family Protection Settings",
             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
             color = MaterialTheme.colorScheme.onBackground
         )
@@ -427,7 +429,7 @@ private fun StageSecurityReviewContent(
         ) {
             Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
-                    text = "Account Summary",
+                    text = "Account Overview",
                     style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -454,9 +456,9 @@ private fun StageSecurityReviewContent(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
-                        Text(text = "Proactive Threat Alerts", fontWeight = FontWeight.SemiBold)
+                        Text(text = "Instant Safety Alerts", fontWeight = FontWeight.SemiBold)
                         Text(
-                            text = "Receive notifications when credential leaks are found.",
+                            text = "Get real-time alerts when children reach screen time limits or visit flagged sites.",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -473,9 +475,9 @@ private fun StageSecurityReviewContent(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
-                        Text(text = "Enforce Two-Factor Auth", fontWeight = FontWeight.SemiBold)
+                        Text(text = "Protect Guardian Settings", fontWeight = FontWeight.SemiBold)
                         Text(
-                            text = "Require extra verification during sensitive logins.",
+                            text = "Require authentication before changing rules or unpairing devices.",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -492,9 +494,9 @@ private fun StageSecurityReviewContent(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
-                        Text(text = "Agree to Terms & Privacy", fontWeight = FontWeight.SemiBold)
+                        Text(text = "Family Privacy & Terms", fontWeight = FontWeight.SemiBold)
                         Text(
-                            text = "Consent to zero-knowledge privacy handling.",
+                            text = "Consent to secure on-device filtering and family privacy policies.",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -508,3 +510,4 @@ private fun StageSecurityReviewContent(
         }
     }
 }
+
