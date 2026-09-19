@@ -52,4 +52,25 @@ class NavigationStateTest {
         assertEquals("register", Screen.Register.route)
         assertEquals("home", Screen.Home.route)
     }
+
+    @Test
+    fun `nav tabs are uniquely and accurately configured with 5 destinations`() {
+        val tabs = app.guardian.android.navigation.NavTab.items
+        assertEquals(5, tabs.size)
+        assertEquals("dashboard", app.guardian.android.navigation.NavTab.Dashboard.route)
+        assertEquals("rules", app.guardian.android.navigation.NavTab.Rules.route)
+        assertEquals("assistant", app.guardian.android.navigation.NavTab.Assistant.route)
+        assertEquals("activity", app.guardian.android.navigation.NavTab.Activity.route)
+        assertEquals("family", app.guardian.android.navigation.NavTab.Family.route)
+
+        assertEquals("Dashboard", app.guardian.android.navigation.NavTab.Dashboard.title)
+        assertEquals("Rules & Limits", app.guardian.android.navigation.NavTab.Rules.title)
+        assertEquals("Assistant", app.guardian.android.navigation.NavTab.Assistant.title)
+        assertEquals("Activity", app.guardian.android.navigation.NavTab.Activity.title)
+        assertEquals("Family", app.guardian.android.navigation.NavTab.Family.title)
+
+        val uniqueRoutes = tabs.map { it.route }.toSet()
+        assertEquals(5, uniqueRoutes.size)
+    }
 }
+

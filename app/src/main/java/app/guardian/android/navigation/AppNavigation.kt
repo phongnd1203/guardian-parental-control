@@ -6,7 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import app.guardian.android.ui.MainViewModel
-import app.guardian.android.ui.screens.HomeScreen
+import app.guardian.android.ui.screens.MainScreen
 import app.guardian.android.ui.screens.LoginScreen
 import app.guardian.android.ui.screens.OnboardingScreen
 import app.guardian.android.ui.screens.RegisterScreen
@@ -70,7 +70,7 @@ fun AppNavigation(
         }
 
         composable(Screen.Home.route) {
-            HomeScreen(
+            MainScreen(
                 onSignOut = {
                     viewModel.signOut {
                         navController.navigate(Screen.Login.route) {
