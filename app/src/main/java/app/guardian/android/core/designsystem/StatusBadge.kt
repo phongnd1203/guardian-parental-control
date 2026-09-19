@@ -16,38 +16,73 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import app.guardian.android.core.model.DeviceOnlineStatus
 import app.guardian.android.core.model.FamilyRole
 import app.guardian.android.core.model.ProtectionStatus
+
+@Composable
+fun DeviceStatusBadge(
+    status: DeviceOnlineStatus,
+    modifier: Modifier = Modifier,
+    showBackground: Boolean = false
+) {
+    val (dotColor, label, desc) = when (status) {
+        DeviceOnlineStatus.ONLINE -> Triple(Color(0xFF4CAF50), "Online", "Trực tuyến")
+        DeviceOnlineStatus.RECENTLY_ONLINE -> Triple(Color(0xFFFF9800), "Recently Online", "Vừa hoạt động")
+        DeviceOnlineStatus.OFFLINE -> Triple(Color(0xFF9E9E9E), "Offline", "Ngoại tuyến")
+    }
+
+    val content = @Composable {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = if (showBackground) 8.dp else 0.dp, vertical = if (showBackground) 4.dp else 0.dp)
+        ) {
+            androidx.compose.foundation.layout.Box(
+                modifier = Modifier
+                    .size(8.dp)
+                    .clip(CircleShape)
+                    .background(dotColor)
+            )
+            Spacer(modifier = Modifier.width(6.dp))
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+
+    androidx.compose.foundation.layout.Box(
+        modifier = modifier
+            .semantics(mergeDescendants = true) {
+                contentDescription = "Trạng thái thiết bị: $desc"
+            }
+            .then(
+                if (showBackground) {
+                    Modifier
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                } else {
+                    Modifier
+                }
+            )
+    ) {
+        content()
+    }
+}
 
 @Composable
 fun OnlineStatusBadge(
     status: DeviceOnlineStatus,
     modifier: Modifier = Modifier
 ) {
-    val (dotColor, label) = when (status) {
-        DeviceOnlineStatus.ONLINE -> Color(0xFF4CAF50) to "Online"
-        DeviceOnlineStatus.RECENTLY_ONLINE -> Color(0xFFFF9800) to "Recent"
-        DeviceOnlineStatus.OFFLINE -> Color(0xFF9E9E9E) to "Offline"
-    }
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-    ) {
-        androidx.compose.foundation.layout.Box(
-            modifier = Modifier
-                .size(8.dp)
-                .clip(CircleShape)
-                .background(dotColor)
-        )
-        Spacer(modifier = Modifier.width(6.dp))
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
+    DeviceStatusBadge(
+        status = status,
+        modifier = modifier,
+        showBackground = false
+    )
 }
 
 @Composable
@@ -92,4 +127,25 @@ fun ProtectionStatusBadge(
             .background(bgColor)
             .padding(horizontal = 6.dp, vertical = 2.dp)
     )
+}
+
+@androidx.compose.ui.tooling.preview.Preview(showBackground = true)
+@Composable
+private fun StatusBadgePreview() {
+    MaterialTheme {
+        androidx.compose.foundation.layout.Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp)
+        ) {
+            DeviceStatusBadge(status = DeviceOnlineStatus.ONLINE)
+            DeviceStatusBadge(status = DeviceOnlineStatus.RECENTLY_ONLINE)
+            DeviceStatusBadge(status = DeviceOnlineStatus.OFFLINE)
+            RoleBadge(role = FamilyRole.OWNER)
+            RoleBadge(role = FamilyRole.PARENT)
+            RoleBadge(role = FamilyRole.VIEWER)
+            ProtectionStatusBadge(status = ProtectionStatus.ACTIVE)
+            ProtectionStatusBadge(status = ProtectionStatus.WARNING)
+            ProtectionStatusBadge(status = ProtectionStatus.DISABLED)
+        }
+    }
 }

@@ -47,4 +47,14 @@ class DateTimeUtilsTest {
         assertEquals(DeviceOnlineStatus.OFFLINE, DateTimeUtils.calculateOnlineStatus(null, now))
         assertEquals("Never seen", DateTimeUtils.formatLastSeenText(null, now))
     }
+
+    @Test
+    fun `format short time returns HH mm formatted time`() {
+        val instant = Instant.parse("2026-09-19T08:30:00Z")
+        val formatted = DateTimeUtils.formatShortTime(instant, java.time.ZoneId.of("UTC"))
+        assertEquals("08:30", formatted)
+
+        val nullFormatted = DateTimeUtils.formatShortTime(null)
+        assertEquals("", nullFormatted)
+    }
 }

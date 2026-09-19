@@ -102,4 +102,13 @@ object DateTimeUtils {
             else -> "${duration.toDays()}d ago"
         }
     }
+
+    /**
+     * Format Instant to short time string (e.g. "08:30").
+     */
+    fun formatShortTime(instant: Instant?, zoneId: ZoneId = ZoneId.systemDefault()): String {
+        if (instant == null) return ""
+        val formatter = DateTimeFormatter.ofPattern("HH:mm").withZone(zoneId)
+        return formatter.format(instant)
+    }
 }

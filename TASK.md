@@ -6,7 +6,7 @@ Tài liệu này chi tiết hóa toàn bộ các hạng mục triển khai cho *
 
 ## Bảng trạng thái tổng quan
 
-- **Tiến độ tổng thể:** 60% hoàn thành (Hoàn thành 100% Giai đoạn 1, Giai đoạn 2 & Giai đoạn 3)
+- **Tiến độ tổng thể:** 75% hoàn thành (Hoàn thành 100% Giai đoạn 1, 2, 3 & 4)
 - **Quy ước trạng thái:**
   - `[ ]` Chưa bắt đầu (Pending)
   - `[/]` Đang thực hiện (In Progress)
@@ -202,21 +202,21 @@ Tài liệu này chi tiết hóa toàn bộ các hạng mục triển khai cho *
 
 ## Giai đoạn 4: Thành phần Giao diện & Design System (UI Components)
 
-- [ ] **Badge trạng thái thiết bị (`DeviceStatusBadge`)**:
+- [x] **Badge trạng thái thiết bị (`DeviceStatusBadge`)**:
   - Hỗ trợ semantic/accessibility: Không dùng màu đơn lẻ, kết hợp icon + text (`● Online`, `● Recently Online`, `● Offline`).
-- [ ] **Card trẻ em (`ChildCard`)**:
+- [x] **Card trẻ em (`ChildCard`)**:
   - Hiển thị avatar, tên, tuổi (tính từ DOB), tóm tắt thiết bị và trạng thái bảo vệ (Protection status).
-- [ ] **Card thành viên (`MemberCard`)**:
+- [x] **Card thành viên (`MemberCard`)**:
   - Hiển thị avatar, tên, nhãn quyền (`Owner`, `Parent`, `Viewer`), huy hiệu `You`.
-- [ ] **Card thiết bị (`DeviceCard`)**:
+- [x] **Card thiết bị (`DeviceCard`)**:
   - Model, battery level (%) kèm icon pin/sạc, trạng thái bảo vệ, thời gian last seen.
-- [ ] **Thành phần Skeleton Loading (`FamilySkeletonLoader`)**:
+- [x] **Thành phần Skeleton Loading (`FamilySkeletonLoader`)**:
   - Shimmer placeholders cho header, danh sách trẻ em và thành viên, tránh full-screen spinner đột ngột.
-- [ ] **Banner Offline (`OfflineNoticeBanner`)**:
+- [x] **Banner Offline (`OfflineNoticeBanner`)**:
   - Thông báo rõ ràng: *"Bạn đang ngoại tuyến. Dữ liệu cập nhật lúc 08:30"*.
-- [ ] **Hộp thoại xác nhận phá hủy (`GuardianConfirmDialog`)**:
+- [x] **Hộp thoại xác nhận phá hủy (`GuardianConfirmDialog`)**:
   - Theo chuẩn Material 3 AlertDialog cho các hành động xóa trẻ, hủy ghép nối thiết bị, xóa thành viên. Nút hành động nguy hiểm đặt đúng quy chuẩn.
-- [ ] **Bộ chọn & nén ảnh đại diện (`AvatarPickerHelper`)**:
+- [x] **Bộ chọn & nén ảnh đại diện (`AvatarPickerHelper`)**:
   - Tích hợp Android Photo Picker, nén WebP/JPEG, kiểm tra kích thước tối ưu trước khi tải lên Supabase Storage.
 
 ---
