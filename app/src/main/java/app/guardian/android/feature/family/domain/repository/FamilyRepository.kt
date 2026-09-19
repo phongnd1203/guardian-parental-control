@@ -13,17 +13,41 @@ import java.time.LocalDate
 interface FamilyRepository {
     fun observeFamily(): Flow<Family?>
     fun observeChildren(familyId: String): Flow<List<Child>>
+    fun observeChild(childId: String): Flow<Child?>
+    suspend fun getChild(childId: String): Child?
+
     fun observeMembers(familyId: String): Flow<List<FamilyMember>>
-    fun observeDevices(childId: String): Flow<List<Device>>
     fun observeInvitations(familyId: String): Flow<List<FamilyInvitation>>
 
-    suspend fun refreshFamily()
+    fun observeDevices(childId: String): Flow<List<Device>>
+    fun observeDevice(deviceId: String): Flow<Device?>
+    suspend fun getDevice(deviceId: String): Device?
+
+    suspend fun refreshFamily(familyId: String? = null): Result<Unit>
     suspend fun createFamily(name: String): Result<String>
-    suspend fun updateChild(childId: String, name: String, nickname: String?, dob: LocalDate?): Result<Unit>
+
+    suspend fun createChild(
+        familyId: String,
+        name: String,
+        nickname: String? = null,
+        dob: LocalDate? = null,
+        avatarBytes: ByteArray? = null
+    ): Result<Child>
+
+    suspend fun updateChild(
+        childId: String,
+        name: String,
+        nickname: String? = null,
+        dob: LocalDate? = null,
+        avatarBytes: ByteArray? = null
+    ): Result<Unit>
+
     suspend fun deleteChild(childId: String): Result<Unit>
+
     suspend fun createPairingSession(childId: String): Result<PairingSession>
     suspend fun unpairDevice(deviceId: String): Result<Unit>
     suspend fun renameDevice(deviceId: String, newName: String): Result<Unit>
+
     suspend fun inviteMember(email: String, role: FamilyRole): Result<Unit>
     suspend fun cancelInvitation(invitationId: String): Result<Unit>
     suspend fun acceptInvitation(token: String): Result<Unit>

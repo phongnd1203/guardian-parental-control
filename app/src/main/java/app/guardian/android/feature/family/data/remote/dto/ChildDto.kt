@@ -30,3 +30,19 @@ data class ChildDto(
     @SerialName("deleted_at")
     val deletedAt: String? = null
 )
+
+@Serializable
+data class CreateChildRequestDto(
+    @SerialName("family_id")
+    val familyId: String,
+    @SerialName("name")
+    val name: String,
+    @SerialName("nickname")
+    val nickname: String? = null,
+    @SerialName("date_of_birth")
+    val dateOfBirth: String? = null,
+    @SerialName("avatar_path")
+    val avatarPath: String? = null,
+    @SerialName("status")
+    val status: String = "ACTIVE"
+)

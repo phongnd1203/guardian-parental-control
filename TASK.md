@@ -6,7 +6,7 @@ Tài liệu này chi tiết hóa toàn bộ các hạng mục triển khai cho *
 
 ## Bảng trạng thái tổng quan
 
-- **Tiến độ tổng thể:** 40% hoàn thành (Hoàn thành 100% Giai đoạn 1 & Giai đoạn 2)
+- **Tiến độ tổng thể:** 60% hoàn thành (Hoàn thành 100% Giai đoạn 1, Giai đoạn 2 & Giai đoạn 3)
 - **Quy ước trạng thái:**
   - `[ ]` Chưa bắt đầu (Pending)
   - `[/]` Đang thực hiện (In Progress)
@@ -149,54 +149,54 @@ Tài liệu này chi tiết hóa toàn bộ các hạng mục triển khai cho *
 ## Giai đoạn 3: Tầng Domain & Repository (Offline-First & Realtime)
 
 ### 3.1. Domain Models
-- [ ] Tạo các domain model thuần túy (không phụ thuộc Room/Supabase annotations):
+- [x] Tạo các domain model thuần túy (không phụ thuộc Room/Supabase annotations):
   - `Family`, `Child` (tính tuổi tự động qua `date_of_birth`), `Device`, `FamilyMember` (`FamilyRole`: `OWNER`, `PARENT`, `VIEWER`), `DevicePermissionStatus`, `FamilyInvitation`, `PairingSession`.
   - Enum `DeviceOnlineStatus`: `ONLINE` (<= 2 phút), `RECENTLY_ONLINE` (2-15 phút), `OFFLINE` (> 15 phút).
 
 ### 3.2. Data Sources & Mappers
-- [ ] Viết Data DTOs tuần tự hóa với `@Serializable`.
-- [ ] Viết Data Mappers:
+- [x] Viết Data DTOs tuần tự hóa với `@Serializable`.
+- [x] Viết Data Mappers:
   - DTO <-> Entity (Network -> Local Cache).
   - Entity <-> Domain Model (Local Cache -> Domain).
   - DTO <-> Domain Model (Direct API -> Domain).
-- [ ] Xây dựng `FamilyRemoteDataSource`:
+- [x] Xây dựng `FamilyRemoteDataSource`:
   - Thực hiện các truy vấn PostgREST trực tiếp với RLS.
-- [ ] Xây dựng `FamilyFunctionDataSource`:
+- [x] Xây dựng `FamilyFunctionDataSource`:
   - Gọi các Supabase Edge Functions cho các tác vụ quan trọng.
-- [ ] Xây dựng `FamilyRealtimeDataSource`:
+- [x] Xây dựng `FamilyRealtimeDataSource`:
   - Đăng ký nhận sự kiện realtime từ channel `family_id`.
 
 ### 3.3. Tầng Repository (`FamilyRepository`)
-- [ ] Định nghĩa interface `FamilyRepository`:
+- [x] Định nghĩa interface `FamilyRepository`:
   - `fun observeFamily(): Flow<Family?>`
   - `fun observeChildren(familyId: String): Flow<List<Child>>`
   - `fun observeMembers(familyId: String): Flow<List<FamilyMember>>`
   - `fun observeDevices(childId: String): Flow<List<Device>>`
   - `fun observeInvitations(familyId: String): Flow<List<FamilyInvitation>>`
   - `suspend fun refreshFamily()`
-  - `suspend fun createFamily(name: String): Family`
-  - `suspend fun createChild(name: String, dob: LocalDate?, avatarFile: ByteArray?): Child`
-  - `suspend fun updateChild(childId: String, name: String, nickname: String?, dob: LocalDate?, avatarFile: ByteArray?)`
-  - `suspend fun deleteChild(childId: String)`
-  - `suspend fun createPairingSession(childId: String): PairingSession`
-  - `suspend fun unpairDevice(deviceId: String)`
-  - `suspend fun renameDevice(deviceId: String, newName: String)`
-  - `suspend fun inviteMember(email: String, role: FamilyRole)`
-  - `suspend fun cancelInvitation(invitationId: String)`
-  - `suspend fun acceptInvitation(token: String)`
-  - `suspend fun updateMemberRole(memberId: String, newRole: FamilyRole)`
-  - `suspend fun removeMember(memberId: String)`
-- [ ] Triển khai `FamilyRepositoryImpl`:
+  - `suspend fun createFamily(name: String): Result<String>`
+  - `suspend fun createChild(name: String, dob: LocalDate?, avatarFile: ByteArray?): Result<Child>`
+  - `suspend fun updateChild(childId: String, name: String, nickname: String?, dob: LocalDate?, avatarFile: ByteArray?): Result<Unit>`
+  - `suspend fun deleteChild(childId: String): Result<Unit>`
+  - `suspend fun createPairingSession(childId: String): Result<PairingSession>`
+  - `suspend fun unpairDevice(deviceId: String): Result<Unit>`
+  - `suspend fun renameDevice(deviceId: String, newName: String): Result<Unit>`
+  - `suspend fun inviteMember(email: String, role: FamilyRole): Result<Unit>`
+  - `suspend fun cancelInvitation(invitationId: String): Result<Unit>`
+  - `suspend fun acceptInvitation(token: String): Result<Unit>`
+  - `suspend fun updateMemberRole(memberId: String, newRole: FamilyRole): Result<Unit>`
+  - `suspend fun removeMember(memberId: String): Result<Unit>`
+- [x] Triển khai `FamilyRepositoryImpl`:
   - Room là **Single Source of Truth** cho UI đọc dữ liệu.
   - Khi mở ứng dụng: đọc từ Room ngay lập tức -> gọi refresh API Supabase -> ghi đè Room -> Room phát ra data mới.
   - Kết nối Realtime: cập nhật tức thời vào Room khi có thay đổi từ thiết bị khác hoặc child app.
   - Thao tác ghi: kiểm tra mạng, không xếp hàng offline (offline queue) với các hành động bảo mật (xóa con, hủy ghép đôi, đổi quyền).
 
 ### 3.4. Các Use Case Tương Ứng
-- [ ] `ObserveFamilyUseCase`, `RefreshFamilyUseCase`, `CreateFamilyUseCase`.
-- [ ] `ObserveChildrenUseCase`, `GetChildDetailUseCase`, `CreateChildUseCase`, `UpdateChildUseCase`, `DeleteChildUseCase`.
-- [ ] `ObserveMembersUseCase`, `InviteMemberUseCase`, `CancelInvitationUseCase`, `AcceptInvitationUseCase`, `UpdateMemberRoleUseCase`, `RemoveMemberUseCase`.
-- [ ] `ObserveDevicesUseCase`, `GetDeviceDetailUseCase`, `CreatePairingSessionUseCase`, `UnpairDeviceUseCase`, `RenameDeviceUseCase`.
+- [x] `ObserveFamilyUseCase`, `RefreshFamilyUseCase`, `CreateFamilyUseCase`.
+- [x] `ObserveChildrenUseCase`, `GetChildDetailUseCase`, `CreateChildUseCase`, `UpdateChildUseCase`, `DeleteChildUseCase`.
+- [x] `ObserveMembersUseCase`, `ObserveInvitationsUseCase`, `InviteMemberUseCase`, `CancelInvitationUseCase`, `AcceptInvitationUseCase`, `UpdateMemberRoleUseCase`, `RemoveMemberUseCase`.
+- [x] `ObserveDevicesUseCase`, `GetDeviceDetailUseCase`, `CreatePairingSessionUseCase`, `UnpairDeviceUseCase`, `RenameDeviceUseCase`.
 
 ---
 

@@ -2,6 +2,7 @@ package app.guardian.android.feature.family.data.remote
 
 import app.guardian.android.core.network.SupabaseClientProvider
 import app.guardian.android.feature.family.data.remote.dto.ChildDto
+import app.guardian.android.feature.family.data.remote.dto.CreateChildRequestDto
 import app.guardian.android.feature.family.data.remote.dto.DeviceDto
 import app.guardian.android.feature.family.data.remote.dto.DevicePermissionStatusDto
 import app.guardian.android.feature.family.data.remote.dto.FamilyDto
@@ -9,6 +10,8 @@ import app.guardian.android.feature.family.data.remote.dto.FamilyMemberDto
 import app.guardian.android.feature.family.data.remote.dto.InvitationDto
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.filter.FilterOperator
+import io.github.jan.supabase.storage.storage
+import io.github.jan.supabase.storage.upload
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -19,13 +22,32 @@ interface FamilyRemoteDataSource {
     suspend fun getDevices(familyId: String): List<DeviceDto>
     suspend fun getDevicePermissionStatus(deviceId: String): DevicePermissionStatusDto?
     suspend fun getPendingInvitations(familyId: String): List<InvitationDto>
-    suspend fun updateChildInfo(childId: String, name: String, nickname: String?, dob: String?): Result<Unit>
+    suspend fun updateChildInfo(
+        childId: String,
+        name: String,
+        nickname: String?,
+        dob: String?,
+        avatarPath: String? = null
+    ): Result<Unit>
+    suspend fun createChild(
+        familyId: String,
+        name: String,
+        nickname: String?,
+        dob: String?,
+        avatarPath: String?
+    ): Result<ChildDto>
+    suspend fun uploadChildAvatar(
+        familyId: String,
+        childId: String,
+        bytes: ByteArray
+    ): Result<String>
     suspend fun renameDevice(deviceId: String, newName: String): Result<Unit>
 }
 
 class SupabaseFamilyRemoteDataSource : FamilyRemoteDataSource {
 
     private val postgrest = SupabaseClientProvider.postgrest
+    private val storage = SupabaseClientProvider.storage
 
     override suspend fun getMyFamily(): FamilyDto? = withContext(Dispatchers.IO) {
         runCatching {
@@ -108,22 +130,62 @@ class SupabaseFamilyRemoteDataSource : FamilyRemoteDataSource {
         childId: String,
         name: String,
         nickname: String?,
-        dob: String?
+        dob: String?,
+        avatarPath: String?
     ): Result<Unit> = withContext(Dispatchers.IO) {
         runCatching {
+            val updates = buildMap {
+                put("name", name)
+                put("nickname", nickname)
+                put("date_of_birth", dob)
+                if (avatarPath != null) {
+                    put("avatar_path", avatarPath)
+                }
+            }
             postgrest.from("children")
-                .update(
-                    mapOf(
-                        "name" to name,
-                        "nickname" to nickname,
-                        "date_of_birth" to dob
-                    )
-                ) {
+                .update(updates) {
                     filter {
                         eq("id", childId)
                     }
                 }
             Unit
+        }
+    }
+
+    override suspend fun createChild(
+        familyId: String,
+        name: String,
+        nickname: String?,
+        dob: String?,
+        avatarPath: String?
+    ): Result<ChildDto> = withContext(Dispatchers.IO) {
+        runCatching {
+            val request = CreateChildRequestDto(
+                familyId = familyId,
+                name = name,
+                nickname = nickname,
+                dateOfBirth = dob,
+                avatarPath = avatarPath
+            )
+            postgrest.from("children")
+                .insert(request) {
+                    select()
+                }
+                .decodeSingle<ChildDto>()
+        }
+    }
+
+    override suspend fun uploadChildAvatar(
+        familyId: String,
+        childId: String,
+        bytes: ByteArray
+    ): Result<String> = withContext(Dispatchers.IO) {
+        runCatching {
+            val path = "$familyId/children/$childId/avatar.webp"
+            storage.from("family-avatars").upload(path, bytes) {
+                upsert = true
+            }
+            path
         }
     }
 
