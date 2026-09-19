@@ -64,7 +64,7 @@ class NavigationStateTest {
         assertEquals("family", app.guardian.android.navigation.NavTab.Family.route)
 
         assertEquals("Dashboard", app.guardian.android.navigation.NavTab.Dashboard.title)
-        assertEquals("Rules & Limits", app.guardian.android.navigation.NavTab.Rules.title)
+        assertEquals("Rules", app.guardian.android.navigation.NavTab.Rules.title)
         assertEquals("Assistant", app.guardian.android.navigation.NavTab.Assistant.title)
         assertEquals("Activity", app.guardian.android.navigation.NavTab.Activity.title)
         assertEquals("Family", app.guardian.android.navigation.NavTab.Family.title)

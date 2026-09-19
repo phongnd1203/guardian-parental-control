@@ -5,14 +5,21 @@ import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.MemoryCodeVerifierCache
 import io.github.jan.supabase.auth.MemorySessionManager
 import io.github.jan.supabase.createSupabaseClient
+import io.github.jan.supabase.functions.Functions
+import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.realtime.Realtime
+import io.github.jan.supabase.storage.Storage
 import io.ktor.client.engine.okhttp.OkHttp
 
 /**
  * Supabase configuration and client instance.
  *
- * To connect to your Supabase project:
- * 1. Replace [SUPABASE_URL] with your project URL (e.g. "https://xyzcompany.supabase.co").
- * 2. Replace [SUPABASE_PUBLIC_KEY] with your project anon/public key.
+ * Configured with:
+ * - Auth: User & Child device session management
+ * - Postgrest: Direct database querying via RLS
+ * - Realtime: Live data synchronization
+ * - Storage: Family and child avatar upload/download
+ * - Functions: Calling Supabase Edge Functions
  */
 object SupabaseConfig {
 
@@ -30,6 +37,10 @@ object SupabaseConfig {
                 sessionManager = MemorySessionManager()
                 codeVerifierCache = MemoryCodeVerifierCache()
             }
+            install(Postgrest)
+            install(Realtime)
+            install(Storage)
+            install(Functions)
         }
     }
 }

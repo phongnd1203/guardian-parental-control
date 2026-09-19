@@ -6,7 +6,7 @@ Tài liệu này chi tiết hóa toàn bộ các hạng mục triển khai cho *
 
 ## Bảng trạng thái tổng quan
 
-- **Tiến độ tổng thể:** 20% hoàn thành (Hoàn thành 100% Giai đoạn 1: Database & Backend)
+- **Tiến độ tổng thể:** 40% hoàn thành (Hoàn thành 100% Giai đoạn 1 & Giai đoạn 2)
 - **Quy ước trạng thái:**
   - `[ ]` Chưa bắt đầu (Pending)
   - `[/]` Đang thực hiện (In Progress)
@@ -102,39 +102,38 @@ Tài liệu này chi tiết hóa toàn bộ các hạng mục triển khai cho *
 ## Giai đoạn 2: Cấu hình Android Core & Data Infrastructure
 
 ### 2.1. Cập nhật Thư viện & Gradle
-- [ ] Thêm các module Supabase vào `libs.versions.toml` & `app/build.gradle.kts`:
+- [x] Thêm các module Supabase vào `libs.versions.toml` & `app/build.gradle.kts`:
   - `postgrest-kt`, `realtime-kt`, `storage-kt`, `functions-kt`.
-- [ ] Cấu hình Room Database (`androidx.room:room-runtime`, `androidx.room:room-ktx`, `androidx.room:room-compiler` qua KSP).
-- [ ] Thêm Coil Compose (`io.coil-kt:coil-compose`) để load avatar mượt mà.
-- [ ] Thêm thư viện Barcode Scanning/Generating (ZXing Embedded hoặc Google ML Kit Barcode Scanning + QR Code Generator).
-- [ ] Cấu hình `minSdk = 26` (hoặc giữ nguyên nếu dự án đang là minSdk 33).
+- [x] Cấu hình Room Database (`androidx.room:room-runtime`, `androidx.room:room-ktx`, `androidx.room:room-compiler` qua KSP, phiên bản 2.7.0 tương thích KSP2).
+- [x] Thêm Coil Compose (`io.coil-kt:coil-compose`) để load avatar mượt mà.
+- [x] Thêm thư viện Barcode Scanning/Generating (`com.google.zxing:core:3.5.3` và tiện ích `QrCodeGenerator`).
+- [x] Cấu hình `minSdk = 26` (dự án đang sử dụng minSdk 33 >= 26).
 
 ### 2.2. Tổ chức Cấu trúc Thư mục theo Kiến trúc Khuyến nghị
-- [ ] Thiết lập package `core/`:
-  - `core/model/`: Các entity dùng chung.
-  - `core/database/`: Room DB configuration & Base DAO.
-  - `core/network/`: Supabase client instance, Edge Function client, Network monitor.
-  - `core/designsystem/`: Components, icons, dialogs, status tags.
-  - `core/common/`: Result wrapper, UiText, Dispatchers, DateTimeUtils.
-- [ ] Thiết lập package `feature/family/`:
-  - `data/local/`: DAOs & Entities (`FamilyEntity`, `ChildEntity`, `DeviceEntity`, `MemberEntity`).
-  - `data/remote/`: DTOs, Supabase DataSources (PostgREST, Edge Functions, Realtime).
-  - `data/repository/`: `FamilyRepositoryImpl`, Mappers.
-  - `domain/model/`: Domain models.
+- [x] Thiết lập package `core/`:
+  - `core/model/`: Các entity/enum dùng chung (`FamilyRole`, `DeviceOnlineStatus`, `ProtectionStatus`, `ChildStatus`, `InvitationStatus`).
+  - `core/database/`: Room DB configuration (`GuardianDatabase`), TypeConverters (`Converters`).
+  - `core/network/`: Supabase client instance (`SupabaseConfig`, `SupabaseClientProvider`), Network monitor (`NetworkMonitor`, `ConnectivityManagerNetworkMonitor`).
+  - `core/designsystem/`: Components, icons, dialogs, status tags (`AvatarImage`, `OnlineStatusBadge`, `RoleBadge`, `ProtectionStatusBadge`).
+  - `core/common/`: Result wrapper (`Resource`), UiText (`UiText`), Dispatchers (`AppDispatchers`), DateTimeUtils (`DateTimeUtils`), QrCodeGenerator (`QrCodeGenerator`).
+- [x] Thiết lập package `feature/family/`:
+  - `data/local/`: DAOs & Entities (`FamilyEntity`, `ChildEntity`, `DeviceEntity`, `FamilyMemberEntity`, `DevicePermissionStatusEntity`, `InvitationEntity`, `FamilyDao`, `ChildDao`, `DeviceDao`, `MemberDao`, `InvitationDao`).
+  - `data/remote/`: DTOs (`FamilyDto`, `ChildDto`, `DeviceDto`, `PairingDtos`, `ErrorResponseDto`), Supabase DataSources (`FamilyRemoteDataSource`, `FamilyFunctionDataSource`, `FamilyRealtimeDataSource`).
+  - `data/mapper/`: `FamilyMappers` ánh xạ 2 chiều DTO <-> Entity <-> Domain.
+  - `domain/model/`: Domain models (`Family`, `Child`, `Device`, `FamilyMember`, `DevicePermissionStatus`, `FamilyInvitation`, `PairingSession`).
   - `domain/repository/`: `FamilyRepository` interface.
-  - `domain/usecase/`: Use cases độc lập.
-  - `ui/`: Các viewmodels, screens, components.
+  - `domain/usecase/`: Use cases độc lập sẵn sàng triển khai tiếp ở Giai đoạn 3.
 
 ### 2.3. Cài đặt Room Local Database (Offline-First Cache)
-- [ ] Định nghĩa Room Entities:
+- [x] Định nghĩa Room Entities:
   - `FamilyEntity`, `ChildEntity`, `FamilyMemberEntity`, `DeviceEntity`, `DevicePermissionStatusEntity`, `InvitationEntity`.
-- [ ] Định nghĩa Room DAOs:
+- [x] Định nghĩa Room DAOs:
   - `FamilyDao`, `ChildDao`, `DeviceDao`, `MemberDao`, `InvitationDao` hỗ trợ trả về `Flow<T>`.
-- [ ] Định nghĩa `GuardianDatabase` với migration strategy.
-- [ ] Tạo TypeConverters cho Date, UUID, Enums.
+- [x] Định nghĩa `GuardianDatabase` với migration strategy (`fallbackToDestructiveMigration(true)`).
+- [x] Tạo TypeConverters cho Date/Instant, LocalDate, Enums.
 
 ### 2.4. Khởi tạo Supabase Client Đầy Đủ
-- [ ] Cập nhật `SupabaseConfig.kt` bổ sung các plugin:
+- [x] Cập nhật `SupabaseConfig.kt` bổ sung các plugin:
   - `install(Auth)`
   - `install(Postgrest)`
   - `install(Realtime)`
@@ -142,8 +141,8 @@ Tài liệu này chi tiết hóa toàn bộ các hạng mục triển khai cho *
   - `install(Functions)`
 
 ### 2.5. Xử lý Lỗi & Mapping Domain
-- [ ] Xây dựng sealed class `DomainError` và `UiText` (`UiText.DynamicString`, `UiText.StringResource`).
-- [ ] Tạo mapper ánh xạ mã lỗi từ Edge Function (`PAIRING_CODE_EXPIRED`, `FORBIDDEN`, `LAST_OWNER_CANNOT_LEAVE`, ...) sang `UiText`.
+- [x] Xây dựng sealed class `DomainError` và `UiText` (`UiText.DynamicString`, `UiText.StringResource`).
+- [x] Tạo mapper ánh xạ mã lỗi từ Edge Function (`PAIRING_CODE_EXPIRED`, `FORBIDDEN`, `LAST_OWNER_CANNOT_LEAVE`, ...) sang `DomainError` và `UiText`.
 
 ---
 
